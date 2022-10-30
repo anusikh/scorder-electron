@@ -15,14 +15,14 @@ let window = null;
 
 const createWindow = () => {
   // Here, we are grabbing the React url from the env (which is on the start script)
-  const startUrl = "http://localhost:3000";
-  // NOTE: DURING BUILD
-  // const startUrl = url.format({
-  //   // we have included the build folder in "files" in package.json
-  //   pathname: path.join(__dirname, "../build/index.html"),
-  //   protocol: "file:",
-  //   slashes: true,
-  // });
+  // const startUrl = "http://localhost:3000";
+  // NOTE: DURING BUILD and PUSH
+  const startUrl = url.format({
+    // we have included the build folder in "files" in package.json
+    pathname: path.join(__dirname, "../build/index.html"),
+    protocol: "file:",
+    slashes: true,
+  });
   window = new BrowserWindow({
     width: 400,
     height: 600,
