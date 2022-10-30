@@ -22,7 +22,7 @@
     "package:linux": "electron-builder build --linux deb -c.extraMetadata.main=build/electron.js --publish never",
     "package:win": "electron-builder build --win -c.extraMetadata.main=build/electron.js --publish never",
     "package:mac": "electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish never",
-    "publish:linux": "electron-builder build --linux --publish always",
+    "publish:linux": "electron-builder build --linux deb --publish always",
     "publish:win": "electron-builder build --win --publish always",
     "publish:mac": "electron-builder build --mac --publish always"
   },
