@@ -64,8 +64,11 @@ function BaseApp(props: BaseAppProps) {
         : false,
       video: {
         mandatory: {
-          chromeMediaSource: "desktop",
+          chromeMediaSource:
+            process.platform === "win32" ? "desktop" : "screen",
           chromeMediaSourceId: s.id,
+          minFrameRate: Math.round(60),
+          maxFrameRate: Math.round(60),
         },
       },
     };

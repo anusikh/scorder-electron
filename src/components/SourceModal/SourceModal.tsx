@@ -47,14 +47,16 @@ function SourceModal(props: SourceModalProps) {
             )}
           </SourcesContainer>
           <hr color="#aaaaa" />
-          <CheckboxContainer>
-            <input
-              type={"checkbox"}
-              checked={aud}
-              onChange={() => setAud((prev) => !prev)}
-            />
-            audio
-          </CheckboxContainer>
+          {process.platform === "win32" && (
+            <CheckboxContainer>
+              <input
+                type={"checkbox"}
+                checked={aud}
+                onChange={() => setAud((prev) => !prev)}
+              />
+              audio
+            </CheckboxContainer>
+          )}
         </ModalContainer>
       ) : (
         <></>

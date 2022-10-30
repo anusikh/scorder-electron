@@ -1,10 +1,14 @@
 {
   "name": "scorder",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "private": true,
   "productName": "Scorder",
   "main": "public/electron.js",
   "homepage": "./",
+  "author": {
+    "name": "anusikh",
+    "email": "anusikh2001@gmail.com"
+  },
   "dependencies": {},
   "resolutions": {
     "styled-components": "^5"
@@ -15,7 +19,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start-electron": "electron .",
-    "package:linux": "electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish never",
+    "package:linux": "electron-builder build --linux deb -c.extraMetadata.main=build/electron.js --publish never",
     "package:win": "electron-builder build --win -c.extraMetadata.main=build/electron.js --publish never",
     "package:mac": "electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish never",
     "publish:linux": "electron-builder build --linux --publish always",
@@ -60,6 +64,14 @@
     "react-icons": "^4.6.0"
   },
   "build": {
+    "protocols": [
+      {
+        "name": "scorder",
+        "schemes": [
+          "scorder"
+        ]
+      }
+    ],
     "mac": {
       "publish": {
         "provider": "github",
@@ -83,7 +95,7 @@
     "linux": {
       "publish": {
         "provider": "github",
-        "owner": "anusikh",
+        "owner": "anusikh anusikh2001@gmail.com",
         "repo": "scorder-electron",
         "private": true,
         "token": ""

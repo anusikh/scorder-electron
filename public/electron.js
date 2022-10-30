@@ -15,14 +15,14 @@ let window = null;
 
 const createWindow = () => {
   // Here, we are grabbing the React url from the env (which is on the start script)
-  // const startUrl = "http://localhost:3000";
+  const startUrl = "http://localhost:3000";
   // NOTE: DURING BUILD
-  const startUrl = url.format({
-    // we have included the build folder in "files" in package.json
-    pathname: path.join(__dirname, "../build/index.html"),
-    protocol: "file:",
-    slashes: true,
-  });
+  // const startUrl = url.format({
+  //   // we have included the build folder in "files" in package.json
+  //   pathname: path.join(__dirname, "../build/index.html"),
+  //   protocol: "file:",
+  //   slashes: true,
+  // });
   window = new BrowserWindow({
     width: 400,
     height: 600,
@@ -39,10 +39,6 @@ const createWindow = () => {
   window.show();
 };
 
-app.on("ready", () => {
-  createWindow();
-});
-
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -55,14 +51,20 @@ app.on("activate", () => {
   }
 });
 
+app.on("ready", () => {
+  createWindow();
+});
+
+// ==== DEEPLINKING ====
+
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient("electron-fiddle", process.execPath, [
+    app.setAsDefaultProtocolClient("scorder", process.execPath, [
       path.resolve(process.argv[1]),
     ]);
   }
 } else {
-  app.setAsDefaultProtocolClient("electron-fiddle");
+  app.setAsDefaultProtocolClient("scorder");
 }
 
 const gotTheLock = app.requestSingleInstanceLock();
@@ -73,15 +75,14 @@ if (!gotTheLock) {
   app.on("second-instance", (event, commandLine, workingDirectory) => {
     // Someone tried to run a second instance, we should focus our window.
     if (window) {
-      const access_token =
-        commandLine[commandLine.length - 1].split("access_token=")[1];
+      const tokens = commandLine[commandLine.length - 1].split("tokens=")[1];
 
       session.defaultSession.cookies
         .set({
-          url: "https://scdr-be-v1.netlify.app",
-          name: "access_token",
-          value: access_token,
-          domain: "scdr-be-v1.netlify.app",
+          url: "http://localhost:8080",
+          name: "tokens",
+          value: tokens,
+          domain: "localhost:8080",
         })
         .then(
           () => {
@@ -97,9 +98,34 @@ if (!gotTheLock) {
   });
 
   app.on("open-url", (event, url) => {
+    const tokens = url.split("tokens=")[1];
+    session.defaultSession.cookies
+      .set({
+        url: "http://localhost:8080",
+        name: "tokens",
+        value: tokens,
+        domain: "localhost:8080",
+      })
+      .then(
+        () => {
+          console.log("done");
+        },
+        (err) => {
+          console.error(err);
+        }
+      );
     dialog.showErrorBox("Welcome Back", `You arrived from: ${url}`);
   });
 }
+
+function logEverywhere(s) {
+  console.log(s);
+  if (window && window.webContents) {
+    window.webContents.executeJavaScript(`console.log("${s}")`);
+  }
+}
+
+// ===== DEEP LINKING END ====
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
