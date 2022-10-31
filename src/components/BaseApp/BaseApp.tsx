@@ -4,6 +4,7 @@ import { COMMANDS, MIMETYPE } from "../../commands";
 import Toolbar from "../Toolbar/Toolbar";
 import SourceModal from "../SourceModal/SourceModal";
 import { AppContainer, StyledVideo } from "./BaseAppStyles";
+import AuthButton from "../AuthButton/AuthButton";
 
 type BaseAppProps = {
   ipcRenderer: any;
@@ -20,6 +21,10 @@ function BaseApp(props: BaseAppProps) {
   const videoElem = React.useRef<any>();
 
   const { ipcRenderer } = props;
+
+  const openUrlBrowser = (url: string) => {
+    ipcRenderer.send(COMMANDS.OPEN_AUTH_TAB, { url: url });
+  };
 
   const getSources = () => {
     setSourceModal(true);
@@ -107,7 +112,8 @@ function BaseApp(props: BaseAppProps) {
       setSourceLoading(false);
     });
     ipcRenderer.on(COMMANDS.GET_COOKIES, (event: any, arg: any) => {
-      console.log(arg);
+      let x = JSON.stringify(decodeURI(arg));
+      console.log(x);
     });
     return () => {
       ipcRenderer.removeAllListeners();
@@ -117,6 +123,7 @@ function BaseApp(props: BaseAppProps) {
 
   return (
     <AppContainer>
+      <AuthButton openUrlBrowser={openUrlBrowser} />
       <Toolbar
         getSources={getSources}
         handleStop={handleStop}
@@ -130,13 +137,7 @@ function BaseApp(props: BaseAppProps) {
         handleSourceSelection={handleSourceSelection}
         sourceLoading={sourceLoading}
       />
-      <StyledVideo
-        autoPlay
-        ref={videoElem}
-        style={{ width: "80%", maxHeight: "100%" }}
-        muted
-        controlsList="nodownload"
-      />
+      <StyledVideo autoPlay ref={videoElem} muted controlsList="nodownload" />
     </AppContainer>
   );
 }

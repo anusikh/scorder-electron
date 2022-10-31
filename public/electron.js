@@ -79,14 +79,14 @@ if (!gotTheLock) {
 
       session.defaultSession.cookies
         .set({
-          url: "http://localhost:8080",
+          url: "https://google143.com",
           name: "tokens",
           value: tokens,
-          domain: "localhost:8080",
+          domain: "google143.com",
         })
         .then(
           () => {
-            console.log("done");
+            logEverywhere("done");
           },
           (err) => {
             console.error(err);
@@ -101,14 +101,14 @@ if (!gotTheLock) {
     const tokens = url.split("tokens=")[1];
     session.defaultSession.cookies
       .set({
-        url: "http://localhost:8080",
+        url: "https://google143.com",
         name: "tokens",
         value: tokens,
-        domain: "localhost:8080",
+        domain: "google143.com",
       })
       .then(
         () => {
-          console.log("done");
+          logEverywhere("done");
         },
         (err) => {
           console.error(err);
@@ -152,22 +152,25 @@ ipcMain.on("SAVE_FILE", async (event, arg) => {
 });
 
 ipcMain.on("OPEN_AUTH_TAB", (event, arg) => {
-  const { authUrl } = arg;
-  shell.openExternal(authUrl);
+  const { url } = arg;
+  shell.openExternal(url);
 });
 
 ipcMain.on("GET_COOKIES", (event, arg) => {
   const { name } = arg;
-  session.defaultSession.cookies
-    .get({
-      name: name,
-    })
-    .then((cookies) => {
-      event.sender.send("GET_COOKIES", cookies);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  console.log(name);
+  if (name) {
+    session.defaultSession.cookies
+      .get({
+        name: `${name}`,
+      })
+      .then((cookies) => {
+        event.sender.send("GET_COOKIES", cookies);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 });
 
 ipcMain.on("CLOSE_WIN", (event, arg) => {
