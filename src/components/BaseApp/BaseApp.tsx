@@ -5,12 +5,15 @@ import Toolbar from "../Toolbar/Toolbar";
 import SourceModal from "../SourceModal/SourceModal";
 import { AppContainer, StyledVideo } from "./BaseAppStyles";
 import AuthButton from "../AuthButton/AuthButton";
+import { getAuthStatus } from "../../api/api";
+import { useAuth } from "../../context/Auth/AuthContext";
 
 type BaseAppProps = {
   ipcRenderer: any;
 };
 
 function BaseApp(props: BaseAppProps) {
+  const { authenticated, toggleAuthenticated } = useAuth();
   const [sources, setSources] = React.useState<any | undefined>(undefined);
   const [mediaRecorder, setMediaRecorder] = React.useState<any>(undefined);
   const [sourceModal, setSourceModal] = React.useState<boolean>(false);
@@ -111,10 +114,19 @@ function BaseApp(props: BaseAppProps) {
       setSources(arg);
       setSourceLoading(false);
     });
-    ipcRenderer.on(COMMANDS.GET_COOKIES, (event: any, arg: any) => {
-      let x = JSON.stringify(decodeURI(arg));
-      console.log(x);
+    ipcRenderer.send(COMMANDS.GET_COOKIES, { name: "tokens" });
+    ipcRenderer.on(COMMANDS.GET_COOKIES, async (event: any, arg: any) => {
+      const tokens = arg?.[0]?.value;
+      let id_token = tokens ? JSON.parse(decodeURI(tokens))?.id_token : "";
+      if (id_token !== "") {
+        const res = await getAuthStatus(id_token);
+        console.log(res?.data.status);
+        if (res?.data?.status) {
+          toggleAuthenticated();
+        }
+      }
     });
+
     return () => {
       ipcRenderer.removeAllListeners();
     };

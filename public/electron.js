@@ -87,11 +87,13 @@ if (!gotTheLock) {
         .then(
           () => {
             logEverywhere("done");
+            window.webContents.reload();
           },
           (err) => {
             console.error(err);
           }
         );
+
       if (window.isMinimized()) window.restore();
       window.focus();
     }
@@ -109,6 +111,7 @@ if (!gotTheLock) {
       .then(
         () => {
           logEverywhere("done");
+          window.webContents.reload();
         },
         (err) => {
           console.error(err);
@@ -158,7 +161,6 @@ ipcMain.on("OPEN_AUTH_TAB", (event, arg) => {
 
 ipcMain.on("GET_COOKIES", (event, arg) => {
   const { name } = arg;
-  console.log(name);
   if (name) {
     session.defaultSession.cookies
       .get({
