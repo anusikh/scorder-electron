@@ -13,7 +13,7 @@ type BaseAppProps = {
 };
 
 function BaseApp(props: BaseAppProps) {
-  const { authenticated, toggleAuthenticated } = useAuth();
+  const { toggleAuthenticated } = useAuth();
   const [sources, setSources] = React.useState<any | undefined>(undefined);
   const [mediaRecorder, setMediaRecorder] = React.useState<any>(undefined);
   const [sourceModal, setSourceModal] = React.useState<boolean>(false);
