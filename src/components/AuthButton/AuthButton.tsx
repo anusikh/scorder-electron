@@ -18,7 +18,7 @@ const AuthButton = (props: AuthButtonProps) => {
     if (repeat.current === false) {
       getAuthUrl()
         .then((res) => setAuthUrl(res?.data?.url))
-        .catch();
+        .catch((err) => console.log("Something went wrong: ", err));
     }
     repeat.current = true;
   }, []);
