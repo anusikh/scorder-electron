@@ -10,6 +10,9 @@ const {
 const path = require("path");
 const url = require("url");
 const { writeFile } = require("fs");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 let window = null;
 
@@ -17,6 +20,7 @@ const createWindow = () => {
   // Here, we are grabbing the React url from the env (which is on the start script)
   // const startUrl = "http://localhost:3000";
   // NOTE: DURING BUILD and PUSH
+
   const startUrl = url.format({
     // we have included the build folder in "files" in package.json
     pathname: path.join(__dirname, "../build/index.html"),
@@ -79,7 +83,7 @@ if (!gotTheLock) {
 
       session.defaultSession.cookies
         .set({
-          url: "https://google143.com",
+          url: encodeURI("https://google143.com"),
           name: "tokens",
           value: tokens,
           domain: "google143.com",
@@ -103,7 +107,7 @@ if (!gotTheLock) {
     const tokens = url.split("tokens=")[1];
     session.defaultSession.cookies
       .set({
-        url: "https://google143.com",
+        url: encodeURI("https://google143.com"),
         name: "tokens",
         value: tokens,
         domain: "google143.com",
