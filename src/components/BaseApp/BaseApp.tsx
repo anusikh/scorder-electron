@@ -4,12 +4,16 @@ import { COMMANDS, MIMETYPE } from "../../commands";
 import Toolbar from "../Toolbar/Toolbar";
 import SourceModal from "../SourceModal/SourceModal";
 import { AppContainer, StyledVideo } from "./BaseAppStyles";
+import AuthButton from "../AuthButton/AuthButton";
+import { getAuthStatus } from "../../api/api";
+import { useAuth } from "../../context/Auth/AuthContext";
 
 type BaseAppProps = {
   ipcRenderer: any;
 };
 
 function BaseApp(props: BaseAppProps) {
+  const { toggleAuthenticated } = useAuth();
   const [sources, setSources] = React.useState<any | undefined>(undefined);
   const [mediaRecorder, setMediaRecorder] = React.useState<any>(undefined);
   const [sourceModal, setSourceModal] = React.useState<boolean>(false);
@@ -20,6 +24,10 @@ function BaseApp(props: BaseAppProps) {
   const videoElem = React.useRef<any>();
 
   const { ipcRenderer } = props;
+
+  const openUrlBrowser = (url: string) => {
+    ipcRenderer.send(COMMANDS.OPEN_AUTH_TAB, { url: url });
+  };
 
   const getSources = () => {
     setSourceModal(true);
@@ -106,9 +114,19 @@ function BaseApp(props: BaseAppProps) {
       setSources(arg);
       setSourceLoading(false);
     });
-    ipcRenderer.on(COMMANDS.GET_COOKIES, (event: any, arg: any) => {
-      console.log(arg);
+    ipcRenderer.send(COMMANDS.GET_COOKIES, { name: "tokens" });
+    ipcRenderer.on(COMMANDS.GET_COOKIES, async (event: any, arg: any) => {
+      const tokens = arg?.[0]?.value;
+      let id_token = tokens ? JSON.parse(decodeURI(tokens))?.id_token : "";
+      if (id_token !== "") {
+        const res = await getAuthStatus(id_token);
+        console.log(res?.data.status);
+        if (res?.data?.status) {
+          toggleAuthenticated();
+        }
+      }
     });
+
     return () => {
       ipcRenderer.removeAllListeners();
     };
@@ -117,6 +135,7 @@ function BaseApp(props: BaseAppProps) {
 
   return (
     <AppContainer>
+      <AuthButton openUrlBrowser={openUrlBrowser} />
       <Toolbar
         getSources={getSources}
         handleStop={handleStop}
@@ -130,13 +149,7 @@ function BaseApp(props: BaseAppProps) {
         handleSourceSelection={handleSourceSelection}
         sourceLoading={sourceLoading}
       />
-      <StyledVideo
-        autoPlay
-        ref={videoElem}
-        style={{ width: "80%", maxHeight: "100%" }}
-        muted
-        controlsList="nodownload"
-      />
+      <StyledVideo autoPlay ref={videoElem} muted controlsList="nodownload" />
     </AppContainer>
   );
 }
