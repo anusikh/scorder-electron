@@ -83,10 +83,10 @@ if (!gotTheLock) {
 
       session.defaultSession.cookies
         .set({
-          url: encodeURI("https://google143.com"),
+          url: encodeURI("http://170-187-251-233.ip.linodeusercontent.com"),
           name: "tokens",
           value: tokens,
-          domain: "google143.com",
+          domain: "170-187-251-233.ip.linodeusercontent.com",
         })
         .then(
           () => {
@@ -107,10 +107,10 @@ if (!gotTheLock) {
     const tokens = url.split("tokens=")[1];
     session.defaultSession.cookies
       .set({
-        url: encodeURI("https://google143.com"),
+        url: encodeURI("http://170-187-251-233.ip.linodeusercontent.com"),
         name: "tokens",
         value: tokens,
-        domain: "google143.com",
+        domain: "170-187-251-233.ip.linodeusercontent.com",
       })
       .then(
         () => {
