@@ -13,7 +13,7 @@ type BaseAppProps = {
 };
 
 function BaseApp(props: BaseAppProps) {
-  const { state, dispatch } = React.useContext(AuthContext);
+  const { dispatch } = React.useContext(AuthContext);
   const repeat = React.useRef<boolean>(false);
   const [sources, setSources] = React.useState<any | undefined>(undefined);
   const [mediaRecorder, setMediaRecorder] = React.useState<any>(undefined);
