@@ -98,7 +98,7 @@
     "linux": {
       "publish": {
         "provider": "github",
-        "owner": "anusikh anusikh2001@gmail.com",
+        "owner": "anusikh",
         "repo": "scorder-electron",
         "private": true,
         "token": ""
