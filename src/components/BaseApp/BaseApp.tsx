@@ -6,14 +6,15 @@ import SourceModal from "../SourceModal/SourceModal";
 import { AppContainer, StyledVideo } from "./BaseAppStyles";
 import AuthButton from "../AuthButton/AuthButton";
 import { getAuthStatus } from "../../api/api";
-import { useAuth } from "../../context/Auth/AuthContext";
+import { AuthContext } from "../../context/Auth/AuthContext";
 
 type BaseAppProps = {
   ipcRenderer: any;
 };
 
 function BaseApp(props: BaseAppProps) {
-  const { toggleAuthenticated } = useAuth();
+  const { dispatch } = React.useContext(AuthContext);
+  const repeat = React.useRef<boolean>(false);
   const [sources, setSources] = React.useState<any | undefined>(undefined);
   const [mediaRecorder, setMediaRecorder] = React.useState<any>(undefined);
   const [sourceModal, setSourceModal] = React.useState<boolean>(false);
@@ -120,10 +121,10 @@ function BaseApp(props: BaseAppProps) {
       let id_token = tokens ? JSON.parse(decodeURI(tokens))?.id_token : "";
       if (id_token !== "") {
         const res = await getAuthStatus(id_token);
-        console.log(res?.data.status);
-        if (res?.data?.status) {
-          toggleAuthenticated();
+        if (res?.data?.status === "PASS" && repeat.current === false) {
+          dispatch({ type: "TOGGLE" });
         }
+        repeat.current = true;
       }
     });
 

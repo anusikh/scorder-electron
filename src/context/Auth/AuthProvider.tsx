@@ -1,19 +1,16 @@
 import React, { ReactNode } from "react";
-import { AuthContext } from "./AuthContext";
+import { AuthContext, initialState } from "./AuthContext";
+import { MainReducer } from "./MainReducer";
 
 type AuthProviderProps = {
   children: ReactNode;
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [authenticated, setAuthenticated] = React.useState<boolean>(false);
-
-  const toggleAuthenticated = () => {
-    setAuthenticated((prev) => !prev);
-  };
+  const [state, dispatch] = React.useReducer(MainReducer, initialState);
 
   return (
-    <AuthContext.Provider value={{ authenticated, toggleAuthenticated }}>
+    <AuthContext.Provider value={{ state, dispatch }}>
       {children}
     </AuthContext.Provider>
   );
